@@ -3,6 +3,7 @@ package accounts
 import (
   "viking-bank/model"
   "viking-bank/seeds"
+  "viking-bank/transfer_requests"
 )
 
 var Accounts []model.Account = seeds.CreateAccounts()
@@ -43,4 +44,14 @@ func Transfer(from string, to string, amount int) bool {
   fromAccount := &Accounts[fromIndex]
   toAccount := &Accounts[toIndex]
   return fromAccount.Transfer(amount, toAccount)
+}
+func TransferByRequest(request *model.TransferRequest) bool {
+  if request.Transfered {
+    return false
+  }
+  if Transfer(request.To, request.From, request.Amount) {
+    transfer_requests.Transfered(request.Id)
+    return true
+  }
+  return false
 }

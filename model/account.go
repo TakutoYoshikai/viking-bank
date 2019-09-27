@@ -15,3 +15,4 @@ func (account *Account) Transfer(amount int, to *Account) bool {
   to.Balance += amount
   return true
 }
+

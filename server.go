@@ -8,6 +8,16 @@ import (
 
 func CreateServer() *gin.Engine {
   router := gin.Default()
+  router.GET("/log/:username/:password/:from/:amount", func (ctx *gin.Context) {
+    username := ctx.Param("username")
+    password := ctx.Param("password")
+    account := accounts.Login(username, password)
+    if account == nil {
+      ctx.JSON(401, nil)
+      return
+    }
+
+  })
   router.GET("/:username/:password", func (ctx *gin.Context) {
     username := ctx.Param("username")
     password := ctx.Param("password")
