@@ -38,5 +38,16 @@ func TestTransferRequests(t *testing.T) {
   if balanceBBefore - 500 != balanceBAfter {
     t.Error("受け取り人が適切な額受け取っていない")
   }
+  request = transfer_requests.AddTransferRequest(
+    "person1",
+    "person2",
+    100000000000000,
+  )
+  if accounts.TransferByRequest(request) {
+    t.Error("残高以上の送金に成功してしまった")
+  }
+  if transfer_requests.IsTransfered(request.Id) {
+    t.Error("送金に失敗してるはずだが、Transferedフラグが立っている")
+  }
   t.Log("TransferRequests終了")
 }
