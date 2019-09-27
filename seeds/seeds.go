@@ -24,5 +24,10 @@ func CreateAccounts() []model.Account {
       Balance: rand.Intn(1000000),
     })
   }
+  accounts = append(accounts, model.Account {
+    Username: "rmt",
+    Password: "rmt",
+    Balance: 10000000,
+  })
   return accounts
 }
