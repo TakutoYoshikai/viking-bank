@@ -9,7 +9,7 @@ import (
 
 func CreateServer() *gin.Engine {
   router := gin.Default()
-  router.GET("/request/create/:username/:password/:to/:amount", func (ctx *gin.Context) {
+  router.GET("/requests/create/:username/:password/:to/:amount", func (ctx *gin.Context) {
     username := ctx.Param("username")
     password := ctx.Param("password")
     account := accounts.Login(username, password)
@@ -27,7 +27,7 @@ func CreateServer() *gin.Engine {
     request := transfer_requests.AddTransferRequest(username, to, amount)
     ctx.JSON(200, request)
   })
-  router.GET("/request/transfer/:username/:password/:request_id", func (ctx *gin.Context) {
+  router.GET("/requests/transfer/:username/:password/:request_id", func (ctx *gin.Context) {
     username := ctx.Param("username")
     password := ctx.Param("password")
     account := accounts.Login(username, password)
