@@ -66,7 +66,7 @@ func Seeds() Accounts {
       Balance: 1000000,
     }
   }
-  for i := 10; i < 100; i++ {
+  for i := 10; i < 10000; i++ {
     accounts["person" + strconv.Itoa(i)] = &Account {
       Username: "person" + strconv.Itoa(i),
       Password: "password" + strconv.Itoa(i),
