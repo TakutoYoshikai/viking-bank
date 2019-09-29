@@ -2,8 +2,7 @@ package main
 
 import (
   "github.com/gin-gonic/gin"
-  "viking-bank/accounts"
-  "viking-bank/transfer_requests"
+  "viking-bank/model"
   "strconv"
 )
 
@@ -12,7 +11,7 @@ func CreateServer() *gin.Engine {
   router.GET("/requests/show/:username/:password/:request_id", func (ctx *gin.Context) {
     username := ctx.Param("username")
     password := ctx.Param("password")
-    account := accounts.Login(username, password)
+    account := model.Login(username, password)
     if account == nil {
       ctx.JSON(401, nil)
       return
@@ -23,7 +22,7 @@ func CreateServer() *gin.Engine {
       ctx.JSON(400, nil)
       return
     }
-    request := transfer_requests.GetTransferRequest(requestId)
+    request := model.GetTransferRequest(requestId)
     if (account.Username != request.From && account.Username != request.To) {
       ctx.JSON(403, nil)
       return
@@ -33,7 +32,7 @@ func CreateServer() *gin.Engine {
   router.GET("/requests/create/:username/:password/:to/:amount", func (ctx *gin.Context) {
     username := ctx.Param("username")
     password := ctx.Param("password")
-    account := accounts.Login(username, password)
+    account := model.Login(username, password)
     if account == nil {
       ctx.JSON(401, nil)
       return
@@ -45,13 +44,13 @@ func CreateServer() *gin.Engine {
       ctx.JSON(400, nil)
       return
     }
-    request := transfer_requests.AddTransferRequest(username, to, amount)
+    request := model.AddTransferRequest(username, to, amount)
     ctx.JSON(200, request)
   })
   router.GET("/requests/transfer/:username/:password/:request_id", func (ctx *gin.Context) {
     username := ctx.Param("username")
     password := ctx.Param("password")
-    account := accounts.Login(username, password)
+    account := model.Login(username, password)
     if account == nil {
       ctx.JSON(401, nil)
       return
@@ -62,22 +61,22 @@ func CreateServer() *gin.Engine {
       ctx.JSON(400, nil)
       return
     }
-    request := transfer_requests.GetTransferRequest(requestId)
+    request := model.GetTransferRequest(requestId)
     if request == nil {
       ctx.JSON(404, nil)
       return
     }
-    if !accounts.TransferByRequest(request) {
+    if !model.TransferByRequest(request) {
       ctx.JSON(500, nil)
       return
     }
-    account = accounts.Login(username, password)
+    account = model.Login(username, password)
     ctx.JSON(200, account)
   })
   router.GET("/log/:username/:password/:from/:amount", func (ctx *gin.Context) {
     username := ctx.Param("username")
     password := ctx.Param("password")
-    account := accounts.Login(username, password)
+    account := model.Login(username, password)
     if account == nil {
       ctx.JSON(401, nil)
       return
@@ -87,11 +86,11 @@ func CreateServer() *gin.Engine {
   router.GET("/transfer/:username/:password/:amount/:to", func (ctx *gin.Context) {
     username := ctx.Param("username")
     password := ctx.Param("password")
-    account := accounts.Login(username, password)
+    account := model.Login(username, password)
     amountStr := ctx.Param("amount")
     amount, err := strconv.Atoi(amountStr)
     toId := ctx.Param("to")
-    to := accounts.GetAccount(toId)
+    to := model.GetAccount(toId)
     if err != nil {
       ctx.JSON(400, nil)
       return
@@ -104,9 +103,10 @@ func CreateServer() *gin.Engine {
       ctx.JSON(404, nil)
       return
     }
-    success := accounts.Transfer(account.Username, to.Username, amount)
+    success := model.Transfer(account.Username, to.Username, amount)
     if success {
-      ctx.JSON(200, nil)
+      account = model.Login(username, password)
+      ctx.JSON(200, account)
       return
     }
     ctx.JSON(500, nil)
@@ -114,7 +114,7 @@ func CreateServer() *gin.Engine {
   router.GET("/users/:username/:password", func (ctx *gin.Context) {
     username := ctx.Param("username")
     password := ctx.Param("password")
-    account := accounts.Login(username, password)
+    account := model.Login(username, password)
     if account == nil {
       ctx.JSON(401, nil)
       return

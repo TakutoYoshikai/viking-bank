@@ -2,14 +2,13 @@ package test
 
 import (
   "testing"
-  "viking-bank/transfer_requests"
-  "viking-bank/accounts"
+  "viking-bank/model"
 )
 
 func TestTransferRequests(t *testing.T) {
-  balanceABefore := accounts.GetAccount("person1").Balance
-  balanceBBefore := accounts.GetAccount("person2").Balance
-  request := transfer_requests.AddTransferRequest(
+  balanceABefore := model.GetAccount("person1").Balance
+  balanceBBefore := model.GetAccount("person2").Balance
+  request := model.AddTransferRequest(
     "person1",
     "person2",
     500,
@@ -23,14 +22,14 @@ func TestTransferRequests(t *testing.T) {
   if request.To != "person2" {
     t.Error("請求された人が適切でない")
   }
-  if !accounts.TransferByRequest(request) {
+  if !model.TransferByRequest(request) {
     t.Error("請求書からの支払いに失敗した")
   }
-  if !transfer_requests.IsTransfered(request.Id) {
+  if !model.IsTransfered(request.Id) {
     t.Error("送金済みのフラグが立たなかった")
   }
-  balanceAAfter := accounts.GetAccount("person1").Balance
-  balanceBAfter := accounts.GetAccount("person2").Balance
+  balanceAAfter := model.GetAccount("person1").Balance
+  balanceBAfter := model.GetAccount("person2").Balance
 
   if balanceABefore + 500 != balanceAAfter {
     t.Error("送金者のお金が適切な額減っていない")
@@ -38,15 +37,15 @@ func TestTransferRequests(t *testing.T) {
   if balanceBBefore - 500 != balanceBAfter {
     t.Error("受け取り人が適切な額受け取っていない")
   }
-  request = transfer_requests.AddTransferRequest(
+  request = model.AddTransferRequest(
     "person1",
     "person2",
     100000000000000,
   )
-  if accounts.TransferByRequest(request) {
+  if model.TransferByRequest(request) {
     t.Error("残高以上の送金に成功してしまった")
   }
-  if transfer_requests.IsTransfered(request.Id) {
+  if model.IsTransfered(request.Id) {
     t.Error("送金に失敗してるはずだが、Transferedフラグが立っている")
   }
   t.Log("TransferRequests終了")
