@@ -37,7 +37,7 @@ func TestTransfer(t *testing.T) {
   accountB := model.GetAccount("person1")
   balanceA := accountA.Balance
   balanceB := accountB.Balance
-  model.Transfer(accountA.Username, accountB.Username, accountA.Balance)
+  model.Transfer(accountA.Username, accountB.Username, uint64(accountA.Balance))
   if model.GetAccount(accountA.Username).Balance != 0 {
     t.Error("送金者の残高が適切に減っていない")
   }

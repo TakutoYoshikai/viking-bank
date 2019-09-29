@@ -6,7 +6,7 @@ type TransferRequest struct {
   Id int
   From string
   To string
-  Amount int
+  Amount uint64
   Transfered bool
 }
 
@@ -14,7 +14,7 @@ type TransferRequests []*TransferRequest
 
 var transferRequests TransferRequests = TransferRequests{}
 
-func AddTransferRequest(from string, to string, amount int) *TransferRequest {
+func AddTransferRequest(from string, to string, amount uint64) *TransferRequest {
   result := NewTransferRequest(from, to, amount)
   transferRequests = append(transferRequests, result)
   return result
@@ -29,7 +29,7 @@ func GetTransferRequest(id int) *TransferRequest {
   return nil
 }
 
-func NewTransferRequest(from string, to string, amount int) *TransferRequest {
+func NewTransferRequest(from string, to string, amount uint64) *TransferRequest {
   newestTransferRequestId += 1
   return &TransferRequest {
     Id: newestTransferRequestId,

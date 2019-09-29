@@ -39,7 +39,7 @@ func CreateServer() *gin.Engine {
     }
     to := ctx.Param("to")
     amountStr := ctx.Param("amount")
-    amount, err := strconv.Atoi(amountStr)
+    amount, err := strconv.ParseUint(amountStr, 10, 64)
     if err != nil {
       ctx.JSON(400, nil)
       return
@@ -88,7 +88,7 @@ func CreateServer() *gin.Engine {
     password := ctx.Param("password")
     account := model.Login(username, password)
     amountStr := ctx.Param("amount")
-    amount, err := strconv.Atoi(amountStr)
+    amount, err := strconv.ParseUint(amountStr, 10, 64)
     toId := ctx.Param("to")
     to := model.GetAccount(toId)
     if err != nil {

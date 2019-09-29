@@ -16,12 +16,12 @@ type Accounts []*Account
 
 var accounts Accounts = Seeds()
 
-func (account *Account) Transfer(amount int, to *Account) bool {
-  if amount > account.Balance {
+func (account *Account) Transfer(amount uint64, to *Account) bool {
+  if int(amount) > account.Balance {
     return false
   }
-  account.Balance -= amount
-  to.Balance += amount
+  account.Balance -= int(amount)
+  to.Balance += int(amount)
   return true
 }
 
@@ -43,7 +43,7 @@ func GetAccount(username string) *Account {
   return nil
 }
 
-func Transfer(from string, to string, amount int) bool {
+func Transfer(from string, to string, amount uint64) bool {
   fromAccount := GetAccount(from)
   toAccount := GetAccount(to)
   if fromAccount == nil || toAccount == nil {
