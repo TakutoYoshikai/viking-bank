@@ -10,23 +10,18 @@ type TransferRequest struct {
   Transfered bool
 }
 
-type TransferRequests []*TransferRequest
+type TransferRequests map[int]*TransferRequest
 
 var transferRequests TransferRequests = TransferRequests{}
 
 func AddTransferRequest(from string, to string, amount uint64) *TransferRequest {
   result := NewTransferRequest(from, to, amount)
-  transferRequests = append(transferRequests, result)
+  transferRequests[result.Id] = result
   return result
 }
 
 func GetTransferRequest(id int) *TransferRequest {
-  for _, request := range transferRequests {
-    if request.Id == id {
-      return request
-    }
-  }
-  return nil
+  return transferRequests[id]
 }
 
 func NewTransferRequest(from string, to string, amount uint64) *TransferRequest {
