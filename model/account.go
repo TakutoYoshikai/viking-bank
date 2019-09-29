@@ -12,7 +12,7 @@ type Account struct {
   Balance int
 }
 
-type Accounts []*Account
+type Accounts map[string]*Account
 
 var accounts Accounts = Seeds()
 
@@ -26,21 +26,15 @@ func (account *Account) Transfer(amount uint64, to *Account) bool {
 }
 
 func Login(username string, password string) *Account {
-  for _, account := range accounts {
-    if account.Username == username && account.Password == password {
-      return account
-    }
+  account := GetAccount(username)
+  if account == nil || account.Password != password {
+    return nil
   }
-  return nil
+  return account
 }
 
 func GetAccount(username string) *Account {
-  for _, account := range accounts {
-    if account.Username == username {
-      return account
-    }
-  }
-  return nil
+  return accounts[username]
 }
 
 func Transfer(from string, to string, amount uint64) bool {
@@ -66,23 +60,23 @@ func Seeds() Accounts {
   rand.Seed(time.Now().UnixNano())
   accounts := Accounts {}
   for i := 0; i < 10; i++ {
-    accounts = append(accounts, &Account {
+    accounts["person" + strconv.Itoa(i)] = &Account {
       Username: "person" + strconv.Itoa(i),
       Password: "password" + strconv.Itoa(i),
       Balance: 1000000,
-    })
+    }
   }
   for i := 10; i < 100; i++ {
-    accounts = append(accounts, &Account {
+    accounts["person" + strconv.Itoa(i)] = &Account {
       Username: "person" + strconv.Itoa(i),
       Password: "password" + strconv.Itoa(i),
       Balance: rand.Intn(1000000),
-    })
+    }
   }
-  accounts = append(accounts, &Account {
+  accounts["rmt"] = &Account {
     Username: "rmt",
     Password: "rmt",
     Balance: 10000000,
-  })
+  }
   return accounts
 }
